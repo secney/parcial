@@ -1,0 +1,83 @@
+// Clase base abstracta para los productos
+abstract class Producto {
+    private String nombre;
+    private double precio;
+
+    public Producto(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    // Método abstracto para calcular el costo total
+    public abstract double calcularCosto();
+}
+
+// Clase derivada para productos vendidos por unidades
+class ProductoPorUnidad extends Producto {
+    private int cantidad;
+
+    public ProductoPorUnidad(String nombre, double precio, int cantidad) {
+        super(nombre, precio);
+        this.cantidad = cantidad;
+    }
+
+    @Override
+    public double calcularCosto() {
+        return getPrecio() * cantidad;
+    }
+}
+
+// Clase derivada para productos vendidos por peso
+class ProductoPorPeso extends Producto {
+    private double peso;
+
+    public ProductoPorPeso(String nombre, double precioPorKilo, double peso) {
+        super(nombre, precioPorKilo);
+        this.peso = peso;
+    }
+
+    @Override
+    public double calcularCosto() {
+        return getPrecio() * peso;
+    }
+}
+
+// Clase para la factura que contiene una lista de productos
+class Factura {
+    private Producto[] productos;
+
+    public Factura(Producto[] productos) {
+        this.productos = productos;
+    }
+
+    public double calcularTotal() {
+        double total = 0;
+        for (Producto producto : productos) {
+            total += producto.calcularCosto();
+        }
+        return total;
+    }
+}
+
+// Clase principal que demuestra herencia y polimorfismo en el contexto de una factura
+public class ProgramaFactura {
+    public static void main(String[] args) {
+        // Crear productos
+        Producto producto1 = new ProductoPorUnidad("Camiseta", 20.0, 3);
+        Producto producto2 = new ProductoPorPeso("Manzanas", 2.5, 2.5);
+
+        // Crear factura con productos
+        Factura factura = new Factura(new Producto[]{producto1, producto2});
+
+        // Calcular y mostrar el total de la factura
+        System.out.println("Total de la factura: $" + factura.calcularTotal());
+    }
+}
