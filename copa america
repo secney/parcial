@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+
+using namespace std;
+
+struct Jugador {
+    string nombre;
+    int amarillas;
+};
+
+struct Equipo {
+    string nombre;
+    string estadio;
+    int puntos;
+    int golesMarcados;
+    bool eliminado;
+    vector<Jugador> jugadores;
+};
+
+void jugarPartido(Equipo &equipoLocal, Equipo &equipoVisitante, const string &estadio, bool faseEliminatoria) {
+    equipoLocal.golesMarcados = rand() % 5;
+    equipoVisitante.golesMarcados = rand() % 5;
+
+    // Simular tarjetas amarillas y rojas
+    int tarjetasLocal = rand() % 100;
+    int tarjetasVisitante = rand() % 100;
+
+    for (Jugador &jugador : equipoLocal.jugadores) {
+        if (tarjetasLocal < jugador.amarillas) { // Probabilidad del porcentaje de amarillas del jugador
+            cout << "Tarjeta amarilla para " << jugador.nombre << " (" << equipoLocal.nombre << ")" << endl;
+            jugador.amarillas++;
+            if (jugador.amarillas == 2) {
+                cout << "¡" << jugador.nombre << " (" << equipoLocal.nombre << ") ha sido expulsado por acumular dos tarjetas amarillas!" << endl;
+            }
+        }
+    }
+
+    for (Jugador &jugador : equipoVisitante.jugadores) {
+        if (tarjetasVisitante < jugador.amarillas) { // Probabilidad del porcentaje de amarillas del jugador
+            cout << "Tarjeta amarilla para " << jugador.nombre << " (" << equipoVisitante.nombre << ")" << endl;
+            jugador.amarillas++;
+            if (jugador.amarillas == 2) {
+                cout << "¡" << jugador.nombre << " (" << equipoVisitante.nombre << ") ha sido expulsado por acumular dos tarjetas amarillas!" << endl;
+            }
+        }
+    }
+
+    cout << equipoLocal.nombre << " " << equipoLocal.golesMarcados << " - " << equipoVisitante.golesMarcados << " " << equipoVisitante.nombre << "   - " << estadio << endl;
+
+    // Resto del código...
+}
+
+void simularEliminatorias(vector<Equipo> &equipos, const string &nombreRonda, bool faseEliminatoria, const string &estadio, const string &fecha) {
+    cout << "\n  " << nombreRonda << "   \n";
+    cout << "Estadio: " << estadio << "  -  Fecha: " << fecha << endl;
+
+    random_shuffle(equipos.begin(), equipos.end());
+
+    for (int i = 0; i < equipos.size(); i += 2) {
+        if (!equipos[i].eliminado && !equipos[i + 1].eliminado) {
+            jugarPartido(equipos[i], equipos[i + 1], estadio, faseEliminatoria);
+        }
+    }
+}
+
+void simularCopaAmerica() {
+    srand(time(0));
+
+    vector<Equipo> equipos = {
+        {"Argentina", "", 0, 0, false, {{"Messi", 10}, {"Aguero", 20}, {"Di Maria", 15}, {"Otamendi", 5}, {"Martinez", 5}}},
+        {"Peru", "", 0, 0, false, {{"Guerrero", 10}, {"Cueva", 15}, {"Farfan", 20}, {"Trauco", 5}, {"Yotun", 5}}},
+        {"Chile", "", 0, 0, false, {{"Vidal", 10}, {"Sanchez", 15}, {"Medel", 20}, {"Diaz", 5}, {"Aranguiz", 5}}},
+        {"Canada", "", 0, 0, false, {{"Davies", 25}, {"Hutchinson", 20}, {"David", 15}, {"Larin", 5}, {"Hoilett", 5}}},
+        {"Mexico", "", 0, 0, false, {{"Hernandez", 15}, {"Guardado", 20}, {"Lozano", 25}, {"Ochoa", 5}, {"Reyes", 5}}},
+        {"Ecuador", "", 0, 0, false, {{"Valencia", 15}, {"Mena", 20}, {"Enner", 25}, {"Caicedo", 5}, {"Plata", 5}}},
+        {"Venezuela", "", 0, 0, false, {{"Rondon", 15}, {"Martinez", 20}, {"Murillo", 25}, {"Machis", 5}, {"Rosales", 5}}},
+        {"Jamaica", "", 0, 0, false, {{"Bailey", 15}, {"Hector", 20}, {"Mattocks", 25}, {"Mariappa", 5}, {"Foster", 5}}},
+        {"Estados Unidos", "", 0, 0, false, {{"Pulisic", 15}, {"McKennie", 20}, {"Adams", 25}, {"Brooks", 5}, {"Steffen", 5}}},
+        {"Uruguay", "", 0, 0, false, {{"Suarez", 15}, {"Cavani", 20}, {"Gimenez", 25}, {"Godin", 5}, {"Vecino", 5}}},
+        {"Panama", "", 0, 0, false, {{"Tejada", 15}, {"Gomez", 20}, {"Arroyo", 25}, {"Godoy", 5}, {"Cummings", 5}}},
+        {"Bolivia", "", 0, 0, false, {{"Moreno", 15}, {"Martins", 20}, {"Alvarez", 25}, {"Chumacero", 5}, {"Flores", 5}}},
+        {"Brasil", "", 0, 0, false, {{"Neymar", 15}, {"Coutinho", 20}, {"Alisson", 25}, {"Marquinhos", 5}, {"Firmino", 5}}},
+        {"Colombia", "", 0, 0, false, {{"James", 15}, {"Falcao", 20}, {"Cuadrado", 25}, {"Ospina", 5}, {"Mina", 5}}},
+        {"Paraguay", "", 0, 0, false, {{"Almiron", 15}, {"Sanabria", 20}, {"Gomez", 25}, {"Villar", 5}, {"Escobar", 5}}},
+        {"Costa Rica", "", 0, 0, false, {{"Ruiz", 15}, {"Navas", 20}, {"Campbell", 25}, {"Gonzalez", 5}, {"Borges", 5}}},
+    };
+
+    simularEliminatorias(equipos, "Partidos iniciales", false, "AT&T Stadium", "DOM 23/06");
+    simularEliminatorias(equipos, "Partidos iniciales", false, "NRG Stadium", "SÁB 22/06");
+    simularEliminatorias(equipos, "Partidos iniciales", false, "Levi's® Stadium", "SÁB 22/06");
+    simularEliminatorias(equipos, "Partidos iniciales", false, "NRG Stadium", "LUN 24/06");
+    simularEliminatorias(equipos, "Partidos iniciales", false, "SoFi Stadium", "LUN 24/06");
+
+    // Cuartos de final
+    simularEliminatorias(equipos, "Cuartos de final", true, "NRG Stadium", "JUE 04/07");
+    simularEliminatorias(equipos, "Cuartos de final", true, "AT&T Stadium", "VIE 05/07");
+    simularEliminatorias(equipos, "Cuartos de final", true, "State Farm Stadium", "SÁB 06/07");
+    simularEliminatorias(equipos, "Cuartos de final", true, "Allegiant Stadium", "SÁB 06/07");
+
+    // Semifinales
+    simularEliminatorias(equipos, "Semifinales", true, "MetLife Stadium", "MAR 09/07");
+    simularEliminatorias(equipos, "Semifinales", true, "Bank of America Stadium", "MIÉ 10/07");
+
+    // Final
+    simularEliminatorias(equipos, "Final", true, "Hard Rock Stadium", "DOM 14/07");
+
+    cout << "\n ¡El campeón de la Copa América es: "
+         << (equipos[0].golesMarcados > equipos[1].golesMarcados ? equipos[0].nombre : equipos[1].nombre)
+         << "!" << endl;
+}
+
+int main() {
+    simularCopaAmerica();
+    return 0;
+}
